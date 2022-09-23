@@ -1,17 +1,14 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
+import thunk from 'redux-thunk'
+import counterReducer from '../features/counter/reducer'
 
-export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-  },
-});
+const reducers = combineReducers({
+	counterReducer,
+})
+//@ts-ignore
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
+export const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)))
+
+export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>
